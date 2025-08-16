@@ -10,37 +10,34 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     /**
-     * Registra um novo usuário e retorna token de autenticação
+     * Registra um novo usuário
      */
     public function register(Request $request)
     {
-        // Validação dos dados
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
         ]);
 
-        // Cria o usuário
         $user = User::create([
             'name'     => $validated['name'],
             'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
-        // Cria token de autenticação
+        // Cria token de acesso
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Retorna sucesso com token
         return response()->json([
             'message' => 'Usuário registrado com sucesso',
-            'user' => $user,
-            'token' => $token,
+            'user'    => $user,
+            'token'   => $token,
         ], 201);
     }
 
     /**
-     * Faz login do usuário e retorna token
+     * Faz login do usuário
      */
     public function login(Request $request)
     {
@@ -57,26 +54,35 @@ class AuthController extends Controller
             ]);
         }
 
-        // Cria token de autenticação
+        // Cria token de acesso
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'Login realizado com sucesso',
-            'user' => $user,
-            'token' => $token,
+            'user'    => $user,
+            'token'   => $token,
         ], 200);
     }
 
     /**
-     * Faz logout do usuário (revoga token atual)
+     * Faz logout do usuário
      */
     public function logout(Request $request)
     {
-        // Revoga o token do usuário que fez a requisição
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
             'message' => 'Logout realizado com sucesso',
-        ], 200);
+        ]);
+    }
+
+    /**
+     * Retorna informações do usuário autenticado
+     */
+    public function me(Request $request)
+    {
+        return response()->json([
+            'user' => $request->user(),
+        ]);
     }
 }
