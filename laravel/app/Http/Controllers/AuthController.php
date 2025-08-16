@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     /**
-     * Registra um novo usuário
+     * Registra um novo usuário e retorna token de autenticação
      */
     public function register(Request $request)
     {
@@ -28,15 +28,19 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        // Retorna sucesso
+        // Cria token de autenticação
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        // Retorna sucesso com token
         return response()->json([
             'message' => 'Usuário registrado com sucesso',
             'user' => $user,
+            'token' => $token,
         ], 201);
     }
 
     /**
-     * Faz login do usuário
+     * Faz login do usuário e retorna token
      */
     public function login(Request $request)
     {
@@ -53,10 +57,26 @@ class AuthController extends Controller
             ]);
         }
 
-        // Retorna sucesso (pode ser token ou usuário)
+        // Cria token de autenticação
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'message' => 'Login realizado com sucesso',
             'user' => $user,
+            'token' => $token,
+        ], 200);
+    }
+
+    /**
+     * Faz logout do usuário (revoga token atual)
+     */
+    public function logout(Request $request)
+    {
+        // Revoga o token do usuário que fez a requisição
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logout realizado com sucesso',
         ], 200);
     }
 }
