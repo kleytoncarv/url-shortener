@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens; // Adicione esta linha
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable; // Adicione HasApiTokens aqui
 
     /**
      * The attributes that are mass assignable.
@@ -38,6 +39,6 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        // Remova 'password' => 'hashed' se estiver causando conflito nos testes
+        // 'password' => 'hashed', // Opcional, se estiver causando conflito nos testes
     ];
 }
