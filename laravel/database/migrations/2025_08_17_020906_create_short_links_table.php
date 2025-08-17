@@ -17,13 +17,8 @@ return new class extends Migration
             $table->string('original_url');
             $table->string('short_code')->unique();
             $table->integer('clicks')->default(0);
-<<<<<<< HEAD
             $table->timestamp('expires_at')->nullable(); // corrigido
             $table->timestamps(); // created_at e updated_at
-=======
-            $table->timestamps('expires_at')->nullable();
-            $table->timestamps();
->>>>>>> 05d331ff58c62ba28978dbc8ad511032fe908ad1
         });
     }
 
