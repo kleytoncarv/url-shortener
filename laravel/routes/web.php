@@ -7,4 +7,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/s/{shortCode', [RedirectController::class, 'redirect']);
+Route::get('/s/{shortCode}', [RedirectController::class, 'redirect']);
