@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ShortLink;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ShortLinkController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'original_url' => 'required|url',
             'user_id' => 'required|exists:users,id',
         ]);
 
         $shortLink = ShortLink::create([
-            'original_url' => $request->original_url,
-            'user_id' => $request->user_id,
-            'short_code' => substr(md5(uniqid()), 0, 6), // gera um código curto aleatório
+            'original_url' => $validated['original_url'],
+            'user_id' => $validated['user_id'],
+            'short_code' => Str::random(6),
+            'expires_at' => now()->addDays(7), // expira em 7 dias
         ]);
 
         return response()->json($shortLink, 201);
