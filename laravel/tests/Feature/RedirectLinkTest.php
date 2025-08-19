@@ -10,7 +10,7 @@ use Tests\TestCase;
 class RedirectLinkTest extends TestCase
 {
     use RefreshDatabase;
-
+    /** @test */
     public function user_is_redirected_to_original_url_when_visiting_short_code()
     {
         $user = User::factory()->create();
