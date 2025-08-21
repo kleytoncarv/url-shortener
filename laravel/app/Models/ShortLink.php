@@ -15,4 +15,8 @@ class ShortLink extends Model
         'short_code',
         'expires_at',
     ];
+
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
 }
