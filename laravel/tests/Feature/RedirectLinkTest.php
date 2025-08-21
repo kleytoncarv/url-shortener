@@ -25,4 +25,24 @@ class RedirectLinkTest extends TestCase
 
         $response->assertRedirect($shortLink->original_url);
     }
+
+    /** @test */
+    public function user_sees_error_when_link_does_not_exist()
+    {
+        $response = $this->get('/s/naoexiste');
+        $response->assertStatus(404);
+        $response->assertSee('Link não encontrado');
+    }
+
+    /** @test */
+    public function user_sees_error_when_link_is_expired()
+    {
+        $link = \App\Models\ShortLink::factory()->create([
+            'expires_at' => now()->subDay(), 
+        ]);
+
+        $response = $this->get('/s/' . $link->short_code);
+        $response->assertStatus(410);
+        $response->assertSee('Link expirado');
+    }
 }
