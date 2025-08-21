@@ -10,6 +10,7 @@ use Tests\TestCase;
 class RedirectLinkTest extends TestCase
 {
     use RefreshDatabase;
+
     /** @test */
     public function user_is_redirected_to_original_url_when_visiting_short_code()
     {
@@ -30,6 +31,7 @@ class RedirectLinkTest extends TestCase
     public function user_sees_error_when_link_does_not_exist()
     {
         $response = $this->get('/s/naoexiste');
+
         $response->assertStatus(404);
         $response->assertSee('Link não encontrado');
     }
@@ -37,11 +39,12 @@ class RedirectLinkTest extends TestCase
     /** @test */
     public function user_sees_error_when_link_is_expired()
     {
-        $link = \App\Models\ShortLink::factory()->create([
-            'expires_at' => now()->subDay(), 
+        $link = ShortLink::factory()->create([
+            'expires_at' => now()->subDay(), // link já expirado
         ]);
 
         $response = $this->get('/s/' . $link->short_code);
+
         $response->assertStatus(410);
         $response->assertSee('Link expirado');
     }
